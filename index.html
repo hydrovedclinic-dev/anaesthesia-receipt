@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Anaesthesia Receipt</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f2f4f7;
+    margin: 0;
+    padding: 10px;
+  }
+  .card {
+    max-width: 420px;
+    margin: auto;
+    background: #ffffff;
+    padding: 16px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  label {
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 8px;
+    display: block;
+  }
+  input, textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
+  textarea {
+    resize: vertical;
+  }
+  button {
+    margin-top: 14px;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    background: #0d6efd;
+    color: white;
+    cursor: pointer;
+  }
+  button:active {
+    background: #084298;
+  }
+  .footer {
+    text-align: center;
+    font-size: 12px;
+    margin-top: 10px;
+    color: #666;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>Anaesthesia Receipt</h2>
+
+  <label>Hospital Name</label>
+  <input id="hospital" placeholder="Hospital Name">
+
+  <label>Hospital Address</label>
+  <textarea id="hospitalAddress" rows="2" placeholder="Hospital Address"></textarea>
+
+  <label>Receipt Number</label>
+  <input id="receiptNo" placeholder="Receipt No">
+
+  <label>Date</label>
+  <input id="date" type="date">
+
+  <label>Patient Name</label>
+  <input id="patient" placeholder="Patient Name">
+
+  <label>Procedure</label>
+  <input id="procedure" placeholder="Procedure">
+
+  <label>Amount (₹)</label>
+  <input id="amount" type="number" placeholder="Amount">
+
+  <label>Anaesthetist Name</label>
+  <input id="doctor" placeholder="Anaesthetist Name">
+
+  <label>Registration Number</label>
+  <input id="regno" placeholder="Registration No">
+
+  <button onclick="generatePDF()">Save Receipt as PDF</button>
+
+  <div class="footer">
+    Offline • Mobile Safe • PDF Only
+  </div>
+</div>
+
+<script>
+function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "mm", "a4");
+
+  let y = 20;
+
+  pdf.setFontSize(14);
+  pdf.text(document.getElementById("hospital").value || "Hospital Name", 105, y, { align: "center" });
+  y += 6;
+
+  pdf.setFontSize(10);
+  pdf.text(document.getElementById("hospitalAddress").value || "", 105, y, { align: "center" });
+  y += 10;
+
+  pdf.setFontSize(11);
+  pdf.line(20, y, 190, y);
+  y += 8;
+
+  const fields = [
+    ["Receipt No", receiptNo.value],
+    ["Date", date.value],
+    ["Patient Name", patient.value],
+    ["Procedure", procedure.value],
+    ["Amount (₹)", amount.value],
+  ];
+
+  fields.forEach(f => {
+    pdf.text(f[0] + ":", 20, y);
+    pdf.text(f[1] || "-", 70, y);
+    y += 7;
+  });
+
+  y += 10;
+  pdf.line(20, y, 190, y);
+  y += 10;
+
+  pdf.text("Anaesthetist:", 20, y);
+  pdf.text(doctor.value || "-", 70, y);
+  y += 7;
+
+  pdf.text("Reg. No:", 20, y);
+  pdf.text(regno.value || "-", 70, y);
+
+  y += 20;
+  pdf.text("Signature", 150, y);
+
+  pdf.save("Anaesthesia_Receipt.pdf");
+}
+</script>
+
+</body>
+</html>
